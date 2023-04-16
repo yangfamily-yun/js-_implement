@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="zh-CN" />
+    <meta name="keywords" content="JavaScript,Validator" />
+    <meta name="description" content="JavaScript,Validator" />
+    <meta content="all" name="robots" />
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="css/validator.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #validator-form {
+            margin: 50px
+        }
+
+        .container {
+            width: 300px;
+            /* margin: 50px auto; */
+        }
+
+        .container div {
+            margin-bottom: 20px;
+        }
+
+        .item {
+            width: 100%;
+            height: 50px;
+            background-color: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .province {
+            width: 80px;
+            font-size: 20px;
+            line-height: 50px;
+            /* padding-left: 5px; */
+            text-align: center;
+            color: violet;
+        }
+
+        select {
+            width: 200px;
+            font-size: 20px;
+            height: 50px;
+            border: none;
+        }
+
+        .left {
+            float: left;
+        }
+
+        .left::after {
+            content: '|';
+            color: #ccc;
+            font-weight: 500;
+            padding-left: 15px;
+        }
+
+        .right {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 标题 -->
+    <h1 id="title"></h1>
+    <!-- 表单验证 -->
+    <form id="validator-form" class="ui-form" method="get" action="">
+        <div class="field-item">
+            <label for="username"><em>*</em>用户名：</label>
+            <input id="username" name="username" class="input-item" type="text" value="" maxlength="20"
+                placeholder="user name" autocomplete="off" />
+        </div>
+        <div class="field-item">
+            <label for="password"><em>*</em>登录密码：</label>
+            <input id="password" name="password" class="input-item" type="password" maxlength="20" value="" />
+        </div>
+        <div class="field-item">
+            <label for="confirm-password"><em>*</em>确认密码：</label>
+            <input id="confirm-password" class="input-item" name="confirm-password" maxlength="20" type="password"
+                value="" />
+        </div>
+
+        <div class="field-item">
+            <label for="card-type">证件类型：</label>
+            <select name="card-type" id="card-type" class="select-item">
+                <option value="1">身份证</option>
+                <option value="2">军人证</option>
+            </select>
+        </div>
+        <div class="field-item">
+            <label for="id-card">证件号码：</label>
+            <input id="id-card" type="text" name="id-card" class="input-item" value="" />
+        </div>
+        <div class="field-item">
+            <label for="email"><em>*</em>电子邮箱：</label>
+            <input id="email" name="email" type="text" class="input-item" value="" />
+        </div>
+        <div class="field-item">
+            <label for="mobile">手机：</label>
+            <input id="mobile" name="mobile" type="text" class="input-item" value="" maxlength="11" />
+        </div>
+        <div class="field-item field-item-space">
+            <input name="btnsubmit" id="btnsubmit" type="submit" value=" 确定提交 " class="btn-item" />
+            <input name="reset" id="reset" type="button" value="重设" class="btn-item" />
+        </div>
+    </form>
+    <br>
+    <!-- 定时器调用 -->
+    <button id="starTimer">开启一个定时器</button>
+    <button id="endTimer">关闭一个定时器</button>
+    <br>
+    <br>
+    <!-- json数据的调用 -->
+    <button id="getData">发送请求，获取json数据</button>
+    <br>
+    <br>
+    <!-- 正则表达式 -->
+    <div id="reg">
+        <input type="text" placeholder="输入被检测值" id="getTestString">
+        <button id="testButton">检查字符串是否含有ABC</button>
+    </div>
+    <br>
+    <!-- 使用数字对象或者数组对象、时间日期对象 -->
+    <p id="currentTime"></p>
+    <br />
+    <!-- 联动效果 -->
+    <div class="container">
+        <div class="item">
+            <div class="left province">省份</div>
+            <div class="right">
+                <select name="province" id="province">
+                    <option value="00">请选择</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <div class="left province">城市</div>
+            <div class="right">
+                <select name="city" id="city">
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <div class="left province">学校</div>
+            <div class="right">
+                <select name="school" id="school">
+                </select>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./js/validator.js"></script>
+    <script src="./js/data.js"></script>
+    <script type="text/javascript">
+        // 标题
+        document.title = '学号姓名';
+        var title = document.getElementById('title');
+        title.innerText = "标题：学号姓名"
+        //表单验证
+        var a = validator({
+            "form": "validator-form"
+        }).add({
+            "target": "username",
+            "rule_type": "username",
+            'tips': '请输入用户名'
+        }).add({
+            "target": "password",
+
+            "rule_type": "password"
+        }).add({
+            "target": "confirm-password",
+            "rule_type": "password",
+            "sameTo": "password",
+            'error': '你填写的密码不正确或者和原密码不同'
+        }).add({
+            "target": "id-card",
+            "rule_type": "idcard||empty"
+        }).add({
+            "target": "email",
+            "rule_type": "email"
+        }).add({
+            "target": "mobile",
+            "rule_type": "mobile||empty"
+        });
+
+        var reset = document.getElementById('reset');
+
+        reset.onclick = function () {
+            a.reset();
+        }
+
+        a.extendRule({
+            'newRules': {
+                'rules': /\w+?/,
+                'tips': "请填写日期！格式如：“2011-09-03”",
+                'error': "您填写的日期格式不正确，正确的格式如：“2011-09-03”"
+            }
+        })
+        // 定时器
+        var starTimer = document.getElementById("starTimer")
+        var endTimer = document.getElementById("endTimer")
+        var timer;
+        starTimer.onclick = function () {
+            console.log("定时器开启了");
+            timer = setInterval(() => {
+                console.log("1");
+            }, 1000);
+        }
+        endTimer.onclick = function () {
+            console.log("定时器关闭了");
+            clearInterval(timer)
+        }
+        // json数据的调用
+        //本地json数据文件地址
+        var url = "./js/plugin.json"
+        var getData = document.getElementById("getData")
+        getData.onclick = function () {
+            var request = new XMLHttpRequest();
+            request.open("get", url);
+            request.send();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    json = JSON.parse(request.responseText);
+                    //调用json数据的方法
+                    showData(json);
+                }
+            }
+        }
+        function showData(data) {
+            console.log(data)
+        }
+        // 正则
+        var testButton = document.getElementById("testButton")
+        var testString = document.getElementById("getTestString")
+        testButton.onclick = function () {
+            var reg = /ABC/
+            console.log(reg.test(testString.value));
+
+        }
+        // 使用时间对象
+        var time = new Date();
+        var currentTime = document.getElementById("currentTime")
+        currentTime.innerText = "当前时间为：" + time
+        // 联动效果
+        // 获取到省份，城市，学校的dom
+        var provinceDom = document.getElementById('province');
+        var cityDom = document.getElementById('city');
+        var schoolDom = document.getElementById('school');
+        // 遍历省份 渲染
+        for (key in province) {
+            // 创建option元素
+            var provinceOption = document.createElement('option');
+            // 先得到省份value值
+            provinceOption.value = key;
+            // 在得到省份名称
+            provinceOption.innerHTML = province[key];
+            // 把创建好的option元素放进省份dom中
+            provinceDom.appendChild(provinceOption);
+        }
+        // 注册省份的表单事件
+        provinceDom.addEventListener('change', function () {
+            // 先清除一下城市的表单显示名称
+            cityDom.innerHTML = '';
+            // 在清除一下学校的表单显示名称
+            schoolDom.innerHTML = '';
+            // 得到表单上显示的省份的标号
+            var provinceValue = provinceDom.value;
+            // 得到城市的数组
+            var citys = city[provinceValue];
+            // 省份选择请选择选项时啥都不干
+            if (citys === undefined) {
+                return;
+            }
+            // 遍历渲染
+            for (key in citys) {
+                var cityOption = document.createElement('option');
+                cityOption.value = key;
+                cityOption.innerHTML = citys[key];
+                cityDom.appendChild(cityOption);
+            }
+            // 得到默认的城市编号
+            var schools = cityDom.value;
+            // 城市下的学校数组
+            var schoolnum = school[schools];
+            // 循坏，渲染
+            for (var i = 0; i < schoolnum.length; i++) {
+                var schoolOption = document.createElement('option');
+                schoolOption.innerHTML = schoolnum[i];
+                schoolDom.appendChild(schoolOption);
+            }
+        })
+        cityDom.addEventListener('change', function () {
+            // 清除学校
+            schoolDom.innerHTML = '';
+            // 得到城市的编号
+            var schools = cityDom.value;
+            // 得到对应的学校数组
+            var schoolnum = school[schools];
+            // 遍历渲染
+            for (var i = 0; i < schoolnum.length; i++) {
+                var schoolOption = document.createElement('option');
+                schoolOption.innerHTML = schoolnum[i];
+                schoolDom.appendChild(schoolOption);
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>
